@@ -37,44 +37,18 @@ def merge(n1, n2):
     "*** YOUR CODE HERE ***"
     
     assert n1>=0 and n2>=0, "You can only merge positive numbers"
-    def get_min_digit(n):
-        """Evalutes the minimum digit in a give number
-        >>>get_min_digit(5366)
-        3"""
-
-        if n < 10:
-            return n
-        else:
-            last, remaining = n%10, n//10 
-            return min(last, get_min_digit(remaining))   
-
-    def get_all_but_min(n,count=0):
-        """Evaluates the number excluding the minimum digit.
-        >>>get_all_but_min(5366)
-        566"""
-        min_digit   = get_min_digit(n)
-        last, remaining = n%10, n//10
-        if last == min_digit:
-            return remaining
-        else:
-            return get_all_but_min(remaining, count+1) + last * (10**count)
-
     
-    min_n1 = get_min_digit(n1)
-    min_n2 = get_min_digit(n2)
-
-    print(get_all_but_min(n1))
     # base case:
     if n1==0: 
-        return merge(n2%10 , n2//10)
+        return n2
     elif n2==0: 
-        return merge(n1%10 , n1//10)    
+        return n1    
     if n1 < 10 and n2 < 10:
         return max(n1, n2)*10 + min(n1,n2)
-    elif min_n1>min_n2:
-        return merge(n1, get_all_but_min(n2))*10 + min_n2
+    elif n1%10 > n2%10:
+        return merge(n1, n2//10)*10 + n2%10
     else:
-        return merge(n2, get_all_but_min(n1))*10 + min_n1
+        return merge(n2, n1//10)*10 + n1%10
 
 
 # Q4. Recursive Hailstone 
@@ -134,14 +108,14 @@ def is_prime(n):
         elif n % factor == 0:
             return True
         else:
-            return find_factor(factor-2)    
+            return find_factor(factor-1)    
 
     # base case: n=2
     if n % (n-1) == 0:
         return True
     
     else:
-        return False if find_factor(n-2) else True
+        return False if find_factor(n//2) else True
 
 # Q6. tree recursion
 def count_stair_ways(n):
@@ -176,14 +150,14 @@ def count_k(n, k):
     elif k==2:
         return count_stair_ways(n)    
     else:
-        if n < k:
-            return count_k(n , n)     
-        elif n==k:
-            return count_k(n, k-1) + count_k(n, k-2)
-        else:
-            sum = count_k(n, n)
-            pass
-
+        sum = 0
+        for steps in range(k-1):
+            if n < steps+1:
+                sum +=0     # sum remains the same
+            else: 
+                sum+= count_k(n, steps+1)
+        return sum
+            
 # Q8.'Tis it? 
 def is_palindrome(s):
     """
@@ -244,9 +218,9 @@ def greatest_pal_two(s):
     >>> greatest_pal_two("")
     ''
     """
-    for i in range(len(s)):
+    """for i in range(len(s)):
         if s[] in s[]:
             return greatest_pal_two(s[i+1:]) 
-    return s    
+    return s """   
     
 
