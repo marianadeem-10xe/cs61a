@@ -245,8 +245,8 @@ def greatest_pal_two(s):
     ''
     """
     for i in range(len(s)):
-        if ___:
-            return ___ 
+        if s[] in s[]:
+            return greatest_pal_two(s[i+1:]) 
     return s    
     
 
