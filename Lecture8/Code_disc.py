@@ -1,5 +1,6 @@
 # Discussion 3:
-# Test
+# ghghg
+
 
 # Q1.Write a function that takes two numbers m and n and returns their product. 
 # Assume m and n are positive integers. Use recursion, not mul or *! 
