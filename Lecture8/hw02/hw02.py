@@ -1,3 +1,4 @@
+from math import remainder
 from operator import add, mul, sub
 
 square = lambda x: x * x
@@ -122,6 +123,7 @@ def pingpong(n):
               func = helper(func, i)  
             i+=1
         return result
+
 def missing_digits(n):
     """Given a number a that is in sorted, increasing order,
     return the number of missing digits in n. A missing digit is
@@ -151,6 +153,17 @@ def missing_digits(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    
+    if n<10:
+        return 0
+    else:
+        last, remaining =  n%10, n//10
+        if last == remaining%10 or (remaining%10) + 1 ==last:
+            return missing_digits(remaining)
+        else:
+            count = (last - remaining%10) -1       # total missing numbers
+            return count + missing_digits(remaining)
+         
 
 
 def get_next_coin(coin):

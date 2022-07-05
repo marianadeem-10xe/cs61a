@@ -1,6 +1,4 @@
 # Discussion 3:
-# ghghg
-
 
 # Q1.Write a function that takes two numbers m and n and returns their product. 
 # Assume m and n are positive integers. Use recursion, not mul or *! 
@@ -183,7 +181,7 @@ def count_k(n, k):
         elif n==k:
             return count_k(n, k-1) + count_k(n, k-2)
         else:
-            sum = count(n, n)
+            sum = count_k(n, n)
             pass
 
 # Q8.'Tis it? 
@@ -247,8 +245,8 @@ def greatest_pal_two(s):
     ''
     """
     for i in range(len(s)):
-        if ________________________________________________________________________:
-            return  ________________________________________________________________________
+        if ___:
+            return ___ 
     return s    
     
 
