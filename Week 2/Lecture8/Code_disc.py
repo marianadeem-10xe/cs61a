@@ -151,11 +151,15 @@ def count_k(n, k):
         return count_stair_ways(n)    
     else:
         sum = 0
-        for steps in range(k-1):
-            if n < steps+1:
+        for steps in range(2, k+1):
+            if n < steps:
                 sum +=0     # sum remains the same
+            elif n == steps:
+                sum+=1
+            elif n == steps+1:
+                return 2    
             else: 
-                sum+= count_k(n, steps+1)
+                sum+= count_k(n, steps-1)
         return sum
             
 # Q8.'Tis it? 
@@ -218,9 +222,9 @@ def greatest_pal_two(s):
     >>> greatest_pal_two("")
     ''
     """
-    """for i in range(len(s)):
-        if s[] in s[]:
-            return greatest_pal_two(s[i+1:]) 
-    return s """   
+    for i in range(len(s)):
+        if s[i+1:] in __:
+            return ___
+    return s   
     
 
