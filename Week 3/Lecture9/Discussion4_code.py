@@ -51,12 +51,26 @@ def max_product(s):
     >>> max_product([])
     1
     """
+    def reduce(reduced_fn, s , initial):
+        reduced = initial
+        for e in s:
+            reduced = reduced_fn(reduced, e)
+        return reduced
+
     if len(s)==0:
         return 1
+    elif len(s)==3:
+        products = [max(s[0]*s[2], s[1])]
+            
     else:
+        products = []
         for i in range(len(s)):
-            print(i, s[i])
-                       
+            elements = [s[i]] + [elem for elem in s if abs(i-s.index(elem))>1]
+            print(elements)
+            # products += elements
+        print(products)    
+print(max_product([1,9,2]))                       
+
 # Q6. Group By
 
 def group_by(s, fn):
@@ -101,7 +115,7 @@ def subset_sum(target, lst):
         return False
     else:
         a = target in lst
-        b = for len range(2, len(lst))
+        b = 0 #for len range(2, len(lst))
         return a or b
 
 # Q8: Intersection (from Su15 MT 1)
@@ -130,3 +144,22 @@ def intersection(lst_of_lsts):
         if condition:
             elements = elements + [e] 
     return elements
+
+# Q9: Wordify (from Sp17 Mock Midterm 1)
+def wordify(s):
+    """ Takes a string s and divides it into a list of words. Assume that the last element of the string is a whitespace.
+    Duplicate words allowed.
+    >>> wordify ('sum total of human knowledge ')
+    ['sum', 'total', 'of', 'human', 'knowledge']
+    >>> wordify ('one should never use exclamation points in writing! ')
+    ['one', 'should', 'never', 'use', 'exclamation', 'points', 'in', 'writing!']
+    """
+
+    start, end, lst = 0,0,[]
+    for letter in s:
+        if letter!= " ":
+            end+=1
+        else:
+            lst+= [s[start:end]]
+            start, end = end+1, end+1 
+    return lst           
