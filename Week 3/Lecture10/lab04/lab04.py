@@ -15,7 +15,7 @@ def couple(s, t):
     
     return [[s[i],t[i]] for i in range(len(s))]
 
-from math import sqrt
+from math import fabs, sqrt
 
 
 def distance(city_a, city_b):
@@ -159,7 +159,14 @@ def berry_finder(t):
     True
     """
     "*** YOUR CODE HERE ***"
-    if 
+    if is_leaf(t):
+        return True if "berry" in str(label(t)) else False
+    else:
+        
+        berry_found = [berry_finder(branch) for branch in branches(t)]
+        return bool(sum(berry_found))   
+
+            
 
 def sprout_leaves(t, leaves):
     """Sprout new leaves containing the data in leaves at each leaf in
@@ -195,7 +202,11 @@ def sprout_leaves(t, leaves):
           2
     """
     "*** YOUR CODE HERE ***"
-
+    if is_leaf(t):
+        return tree(label(t), [tree(l) for l in leaves])
+    else:
+        new_bs = [sprout_leaves(b, leaves) for b in branches(t)]
+        return tree(label(t), new_bs)
 
 # Abstraction tests for sprout_leaves and berry_finder
 def check_abstraction():
@@ -254,7 +265,7 @@ def coords(fn, seq, lower, upper):
     [[-2, 4], [1, 1], [3, 9]]
     """
     "*** YOUR CODE HERE ***"
-    return ______
+    return [[x, fn(x)] for x in seq if lower<=fn(x)<=upper]
 
 
 def riffle(deck):
@@ -267,7 +278,7 @@ def riffle(deck):
     [0, 10, 1, 11, 2, 12, 3, 13, 4, 14, 5, 15, 6, 16, 7, 17, 8, 18, 9, 19]
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    return sum([[deck[i], deck[len(deck)//2 + i]] for i in range(len(deck)//2)], [])
 
 
 def add_trees(t1, t2):

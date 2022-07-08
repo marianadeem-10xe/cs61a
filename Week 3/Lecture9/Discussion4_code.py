@@ -61,7 +61,7 @@ def max_product(s):
         return 1
     elif len(s)==3:
         products = [max(s[0]*s[2], s[1])]
-            
+
     else:
         products = []
         for i in range(len(s)):
@@ -115,7 +115,7 @@ def subset_sum(target, lst):
         return False
     else:
         a = target in lst
-        b = 0 #for len range(2, len(lst))
+        b =  
         return a or b
 
 # Q8: Intersection (from Su15 MT 1)
