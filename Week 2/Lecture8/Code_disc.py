@@ -149,19 +149,13 @@ def count_k(n, k):
         return 1
     elif k==2:
         return count_stair_ways(n)    
+    elif n==k:
+        return count_k(n, k-1) + (n-(k-1))
+    elif n<k:
+        return count_k(n,n)
     else:
-        sum = 0
-        for steps in range(2, k+1):
-            if n < steps:
-                sum +=0     # sum remains the same
-            elif n == steps:
-                sum+=1
-            elif n == steps+1:
-                return 2    
-            else: 
-                sum+= count_k(n, steps-1)
-        return sum
-            
+        return sum([count_k(n-i,k) for i in range(1,k+1)])    
+
 # Q8.'Tis it? 
 def is_palindrome(s):
     """
