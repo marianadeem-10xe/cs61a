@@ -318,13 +318,7 @@ def add_trees(t1, t2):
     """
     "*** YOUR CODE HERE ***"
     
-    if is_leaf(t1) and is_leaf(t2):
-        return tree(label(t1)+label(t2))
-    else:
-        zipped_t  = tree(label=sum([zip(t1,t2)[0]],0),
-                         branches=[zip(t1,t2)[1]])
-        if is_leaf(t1):
-            return tree(label)        
+            
 
 def build_successors_table(tokens):
     """Return a dictionary: keys are words; values are lists of successors.

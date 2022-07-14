@@ -109,14 +109,11 @@ def subset_sum(target, lst):
     >>> subset_sum(0, [-1, -3, 15])     # Sum up none of the numbers to get 0
     True
     """
-    if target==0 or target in lst:
+    if target in lst or target==0:
         return True
-    elif target not in lst and len(lst)==1:
-        return False
     else:
-        a = target in lst
-        b =  
-        return a or b
+        for e in lst:
+            return subset_sum(target-e, [i for i in lst if e!=i])     
 
 # Q8: Intersection (from Su15 MT 1)
 def intersection(lst_of_lsts):

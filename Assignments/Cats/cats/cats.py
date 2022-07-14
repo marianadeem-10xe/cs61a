@@ -149,8 +149,9 @@ def autocorrect(typed_word, valid_words, diff_function, limit):
     """
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
+    diff = [diff_function(typed_word, w, limit) for w in valid_words]
+    return typed_word if min(diff) > limit else valid_words[diff.index(min(diff))]    
     # END PROBLEM 5
-
 
 def feline_flips(start, goal, limit):
     """A diff function for autocorrect that determines how many letters
@@ -175,7 +176,9 @@ def feline_flips(start, goal, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    loop_over = goal if len(start)>=len(goal) else start
+    diff = sum([1 for i in range(len(loop_over)) if start[i]!=goal[i]],abs(len(start)-len(goal)))         
+    return diff if diff<=limit else limit+1
     # END PROBLEM 6
 
 
@@ -196,21 +199,23 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
 
-    if ______________:  # Fill in the condition
+    if len(start)==len(goal):  # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
+        
+                
+
         # END
 
-    elif ___________:  # Feel free to remove or add additional cases
+    elif len(start)!=len(goal)_:  # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
         # END
 
     else:
-        add = ...  # Fill in these lines
-        remove = ...
+        add = lambda i,l, word: word.insert(i,l)   # Fill in these lines
+        remove = start.remove(w)
         substitute = ...
         # BEGIN
         "*** YOUR CODE HERE ***"
