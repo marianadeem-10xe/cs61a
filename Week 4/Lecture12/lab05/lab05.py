@@ -6,7 +6,8 @@ def map(fn, lst):
     [25, 1, 4, 0]
     """
     "*** YOUR CODE HERE ***"
-
+    for i in range(len(lst)):
+        lst[i] = fn(lst[i])
 
 def swap(a, b):
     """Swap the contents of lists a and b.
@@ -20,7 +21,11 @@ def swap(a, b):
     [1, 'two', 3]
     """
     "*** YOUR CODE HERE ***"
-
+    a.extend(b)
+    org_a = a[:len(a)-len(b)]
+    b[:] = org_a 
+    for e in org_a:
+        a.remove(e)
 
 def lgk_pow(n, k):
     """Computes n^k.

@@ -203,20 +203,26 @@ def minimum_mewtations(start, goal, limit):
     if len(start)==len(goal):  # Fill in the condition
         # BEGIN
         "*** YOUR CODE HERE ***"
-        
-                
-
+        if start[0]!=goal[0]:
+            return 1 + minimum_mewtations(start[1:], goal,limit) 
         # END
 
-    elif len(start)!=len(goal)_:  # Feel free to remove or add additional cases
+    elif len(start)!=len(goal) and start[0]==goal[0]:  # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
+        mismatch_idx = min([i for i in range(len(start)) if start[i]==goal[i]])
+        if mismatch_idx not in goal:
+            start.remove(mismatch_idx)
+        else:
+            idx = goal.index()
+            start.insert(2, )    
+        return 1+ minimum_mewtations(start, goal,limit) 
         # END
 
     else:
-        add = lambda i,l, word: word.insert(i,l)   # Fill in these lines
-        remove = start.remove(w)
-        substitute = ...
+        add        = lambda:sum+1   # Fill in these lines
+        remove     = lambda:sum+1
+        substitute = lambda:sum+1
         # BEGIN
         "*** YOUR CODE HERE ***"
         # END
