@@ -37,7 +37,19 @@ def lgk_pow(n, k):
     >>> a = lgk_pow(2, 100000000) # make sure you have log time
     """
     "*** YOUR CODE HERE ***"
-
+    
+    """if k is an even number, the input n is squared first and then raised to the exponent k.
+    This reduces the the number of iterations to be executed."""
+    
+    if k == 1:
+        return n
+    elif k == 0:
+        return 1    
+    for i in range(k):
+        if k%2 == 0:
+            return lgk_pow(n*n, k//2)
+        else:
+            return lgk_pow(n*n, k//2)*n    
 
 from math import sqrt
 
@@ -65,3 +77,12 @@ def is_prime_sqrt(n):
     """
     # sqrt(k) will give the square root of k as a floating point (decimal)
     "*** YOUR CODE HERE ***"
+    sq_n = sqrt(n)
+
+    if int(sq_n)*int(sq_n) == n:
+        return False
+    else:
+        for i in range(2, int(sqrt(n))):
+            if n%i==0:
+                return False
+        return True    

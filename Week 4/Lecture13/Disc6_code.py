@@ -81,13 +81,75 @@ def foldl(s, f, start):
     "*** YOUR CODE HERE ***"
     if not s:
         return start
-    else:    
-        for idx in range(len(s)):
-            if idx==0:
-                s[idx] = f(start, s[idx])
+    else: 
+        val = start
+        for e in s:
+            val = f(val, e)
+        return val
 
-        else:
-            foldl()
-            
+# Q7. Announce losses: see hog.py
+# Q8. Pig Latin
+def pig_latin_original(w):
+    """Return the Pig Latin equivalent of a lowercase English word w."""
+    if starts_with_a_vowel(w):
+        return w + 'ay'
+    else:
+        vowels_found = any([starts_with_a_vowel(l) for l in w])
+        if not vowels_found:
+            return w + "ay" 
+    return pig_latin_original(rest(w) + first(w))
 
-    return           
+def first(s):
+    """Returns the first character of a string."""
+    return s[0]
+
+def rest(s):
+    """Returns all but the first character of a string."""
+    return s[1:]
+
+def starts_with_a_vowel(w):
+    """Return whether w begins with a vowel."""
+    c = first(w)
+    return c == 'a' or c == 'e' or c == 'i' or c == 'o' or c == 'u'
+
+# Q9: Ten-pairs
+def ten_pairs(n):
+    """Return the number of ten-pairs within positive integer n.
+
+    >>> ten_pairs(7823952)
+    3
+    >>> ten_pairs(55055)
+    6
+    >>> ten_pairs(9641469)
+    6
+    """
+    "*** YOUR CODE HERE ***"
+
+# Q11: Pruning Leaves
+def prune_leaves(t, vals):
+    """Return a modified copy of t with all leaves that have a label
+    that appears in vals removed.  Return None if the entire tree is
+    pruned away.
+
+    >>> t = tree(2)
+    >>> print(prune_leaves(t, (1, 2)))
+    None
+    >>> numbers = tree(1, [tree(2), tree(3, [tree(4), tree(5)]), tree(6, [tree(7)])])
+    >>> print_tree(numbers)
+    1
+      2
+      3
+        4
+        5
+      6
+        7
+    >>> print_tree(prune_leaves(numbers, (3, 4, 6, 7)))
+    1
+      2
+      3
+        5
+      6
+    """
+    "*** YOUR CODE HERE ***"
+    if 
+     

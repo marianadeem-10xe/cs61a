@@ -5,7 +5,7 @@ test = {
     {
       'cases': [
         {
-          'answer': '507089800ba7da0a1bf17af624b88bf9',
+          'answer': 'Linear - Θ(n)',
           'choices': [
             'Logarithmic - Θ(log(n))',
             'Linear - Θ(n)',
@@ -13,7 +13,7 @@ test = {
             'Exponential - Θ(2^n)'
           ],
           'hidden': False,
-          'locked': True,
+          'locked': False,
           'question': r"""
           What is the order of growth of `is_prime` in terms of `n`?
           
@@ -25,7 +25,7 @@ test = {
           """
         },
         {
-          'answer': '0794d0e28ff429a96c593376012236a7',
+          'answer': 'Quadratic - Θ(n^2)',
           'choices': [
             'Logarithmic - Θ(log(n))',
             'Linear - Θ(n)',
@@ -33,7 +33,7 @@ test = {
             'Exponential - Θ(2^n)'
           ],
           'hidden': False,
-          'locked': True,
+          'locked': False,
           'question': r"""
           What is the order of growth of `bar` in terms of `n`?
           

@@ -1,14 +1,15 @@
 def insert_into_all(item, nested_list):
     """Return a new list consisting of all the lists in nested_list,
     but with item added to the front of each. You can assuming that
-     nested_list is a list of lists.
+    nested_list is a list of lists.
 
     >>> nl = [[], [1, 2], [3]]
     >>> insert_into_all(0, nl)
     [[0], [0, 1, 2], [0, 3]]
     """
     "*** YOUR CODE HERE ***"
-
+    lst = [[item] + i for i in nested_list]
+    return lst
 
 def subseqs(s):
     """Return a nested list (a list of lists) of all subsequences of S.
@@ -20,13 +21,14 @@ def subseqs(s):
     >>> subseqs([])
     [[]]
     """
-    if ________________:
-        ________________
+    if not s:
+        return [[]]
     else:
-        ________________
-        ________________
-
-
+        lst_subseq = [[]]
+        for i in range(len(s)-1, -1, -1):
+            lst_subseq += insert_into_all(s[i], lst_subseq) 
+        return lst_subseq    
+        
 def non_decrease_subseqs(s):
     """Assuming that S is a list, return a nested list of all subsequences
     of S (a list of lists) for which the elements of the subsequence
@@ -43,14 +45,14 @@ def non_decrease_subseqs(s):
     """
     def subseq_helper(s, prev):
         if not s:
-            return ____________________
+            return [[]]
         elif s[0] < prev:
-            return ____________________
+            return [s[i]] + non_decrease_subseqs(s[1:])
         else:
-            a = ______________________
-            b = ______________________
-            return insert_into_all(________, ______________) + ________________
-    return subseq_helper(____, ____)
+            a = [[]]
+            b = s[0]
+            return insert_into_all(b, a) + a
+    return subseq_helper(s, s[-1])
 
 
 def trade(first, second):
@@ -82,12 +84,13 @@ def trade(first, second):
     """
     m, n = 1, 1
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    equal_prefix = lambda: sum(first[:m])==sum(second[:n]) 
+    while m<len(first) and n<len(second) and not equal_prefix():
+        if sum(first[:m]) < sum(second[:n]):
             m += 1
         else:
             n += 1
+        
 
     if equal_prefix():
         first[:m], second[:n] = second[:n], first[:m]
@@ -122,13 +125,39 @@ def shuffle(cards):
     ['A♡', 'A♢', 'A♤', 'A♧', '2♡', '2♢', '2♤', '2♧', '3♡', '3♢', '3♤', '3♧']
     """
     assert len(cards) % 2 == 0, 'len(cards) must be even'
-    half = _______________
+    half = cards[len(cards)//2:]
     shuffled = []
-    for i in _____________:
-        _________________
-        _________________
+    for i in range(len(half)):
+        shuffled.append(cards[i])
+        shuffled.append(half[i])
     return shuffled
 
+def same_shape(t1, t2):
+    """Return True if t1 is indentical in shape to t2.
+
+    >>> test_tree1 = tree(1, [tree(2), tree(3)])
+    >>> test_tree2 = tree(4, [tree(5), tree(6)])
+    >>> test_tree3 = tree(1,
+    ...                   [tree(2,
+    ...                         [tree(3)])])
+    >>> test_tree4 = tree(4,
+    ...                   [tree(5,
+    ...                         [tree(6)])])
+    >>> same_shape(test_tree1, test_tree2)
+    True
+    >>> same_shape(test_tree3, test_tree4)
+    True
+    >>> same_shape(test_tree2, test_tree4)
+    False
+    """
+    "*** YOUR CODE HERE ***"
+    if is_leaf(t1) and is_leaf(t2):
+        return True
+    else:
+        if len(branches(t1))!= len(branches(t2)):
+            return False
+        else:
+            return all([same_shape(branches(t1)[i], branches(t2)[i]) for i in range(len(branches(t1)))])                
 
 def add_trees(t1, t2):
     """
@@ -166,7 +195,14 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t1) and is_leaf(t2):
+        return tree(label(t1) + label(t2))
+    elif same_shape(t1, t2):
+        zip_t     = list(zip(t1,t2))
+        node , bs = sum(zip_t[0]) , zip_t[1:]
+        return tree(node, [add_trees(tree(b[0]), tree(b[1])) for b in bs])
 
+            
 
 # Tree ADT
 
