@@ -176,9 +176,19 @@ def feline_flips(start, goal, limit):
     5
     """
     # BEGIN PROBLEM 6
-    loop_over = goal if len(start)>=len(goal) else start
-    diff = sum([1 for i in range(len(loop_over)) if start[i]!=goal[i]],abs(len(start)-len(goal)))         
-    return diff if diff<=limit else limit+1
+    len_diff = abs(len(start)-len(goal))
+    # Base case
+    if not start or not goal:
+        return len_diff
+            
+    # Recursive case    
+    else:
+        if start[0]==goal[0]:
+            total = feline_flips(start[1:], goal[1:], limit)
+            return total if total<=limit else limit+1 
+        else: 
+            total = 1 + feline_flips(start[1:], goal[1:], limit)
+            return total if total<=limit else limit+1   
     # END PROBLEM 6
 
 
@@ -199,33 +209,47 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
+    len_diff   = abs(len(start)-len(goal))
+    """add        = lambda l , str : l+str
+    remove     = lambda str : str[1:]
+    substitute = lambda l, str : l+str[1:]"""
 
-    if len(start)==len(goal):  # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        if start[0]!=goal[0]:
-            return 1 + minimum_mewtations(start[1:], goal,limit) 
-        # END
-
-    elif len(start)!=len(goal) and start[0]==goal[0]:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        mismatch_idx = min([i for i in range(len(start)) if start[i]==goal[i]])
-        if mismatch_idx not in goal:
-            start.remove(mismatch_idx)
-        else:
-            idx = goal.index()
-            start.insert(2, )    
-        return 1+ minimum_mewtations(start, goal,limit) 
-        # END
-
+    # Base case
+    if not start or not goal:
+        return len_diff
+    
+    # Recursive case
     else:
-        add        = lambda:sum+1   # Fill in these lines
-        remove     = lambda:sum+1
-        substitute = lambda:sum+1
-        # BEGIN
-        "*** YOUR CODE HERE ***"
+        if start[0]== goal[0]:
+            total = minimum_mewtations(start[1:], goal[1:], limit)
+        
+        else:
+            if start[0] in goal:    # Check if the letter needs to be removed or kept
+                if start.count(start[0]) > goal.count(start[0]):
+                    start = start[1:]       # remove letter
+                    total = 1 + minimum_mewtations(start, goal, limit)
+
+                else:
+                    start = goal[0] + start
+                    total = 1 + minimum_mewtations(start[1:], goal[1:], limit)
+
+            elif start[0] not in goal and len_diff:
+                start = start[1:]       # remove letter
+                total = 1 + minimum_mewtations(start, goal, limit)
+            
+            else:
+                if start[1] == goal[0]:                   
+                    start = start[1:]       # remove letter
+                    total = 1 + minimum_mewtations(start, goal, limit)
+
+                else:
+                    start = goal[0] + start[1:]         # remove then add letter = substitute letter, count as one change
+                    total = 1 + minimum_mewtations(start[1:], goal[1:], limit)
+        print(total)
+        return total if total <= limit else limit+1
         # END
+
+print("changes",minimum_mewtations("rlogcul", "logical", 10))
 
 
 def final_diff(start, goal, limit):

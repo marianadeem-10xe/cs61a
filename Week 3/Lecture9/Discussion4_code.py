@@ -51,7 +51,7 @@ def max_product(s):
     >>> max_product([])
     1
     """
-    def reduce(reduced_fn, s , initial):
+    """def reduce(reduced_fn, s , initial):
         reduced = initial
         for e in s:
             reduced = reduced_fn(reduced, e)
@@ -68,7 +68,14 @@ def max_product(s):
             elements = [s[i]] + [elem for elem in s if abs(i-s.index(elem))>1]
             print(elements)
             # products += elements
-        print(products)    
+        print(products)"""
+    # base case
+    if not s:
+        return 1
+    else:
+        for e in s:
+            if s.index(e)==0:
+                consec_idx = [i+1 for i range(len(s+1))]            
 print(max_product([1,9,2]))                       
 
 # Q6. Group By
@@ -111,9 +118,13 @@ def subset_sum(target, lst):
     """
     if target in lst or target==0:
         return True
+    elif target<0 
+        return False     
     else:
-        for e in lst:
-            return subset_sum(target-e, [i for i in lst if e!=i])     
+        a = 
+        b = 
+        return a or b 
+print(subset_sum(10, [-1, 5, 4, 6]))
 
 # Q8: Intersection (from Su15 MT 1)
 def intersection(lst_of_lsts):
