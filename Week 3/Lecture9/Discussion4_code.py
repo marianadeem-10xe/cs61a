@@ -51,32 +51,27 @@ def max_product(s):
     >>> max_product([])
     1
     """
-    """def reduce(reduced_fn, s , initial):
-        reduced = initial
-        for e in s:
-            reduced = reduced_fn(reduced, e)
-        return reduced
-
-    if len(s)==0:
-        return 1
-    elif len(s)==3:
-        products = [max(s[0]*s[2], s[1])]
-
-    else:
-        products = []
-        for i in range(len(s)):
-            elements = [s[i]] + [elem for elem in s if abs(i-s.index(elem))>1]
-            print(elements)
-            # products += elements
-        print(products)"""
+    def generate_idx(idx, len_lst):
+        yield from range(idx+2, len_lst)
+    
     # base case
     if not s:
         return 1
-    else:
-        for e in s:
-            if s.index(e)==0:
-                consec_idx = [i+1 for i range(len(s+1))]            
-print(max_product([1,9,2]))                       
+    
+    max_list = []
+    # product of 2 elements
+    for i in range(len(s)):
+        max_prod = 0
+        gen = generate_idx(i, len(s))
+        for n in gen:
+            max_prod = max(s[i]*s[n], max_prod)
+
+            # product of more than two elements
+            while n+2<len(s):
+                max_prod = max(max_prod, max_prod*s[n+2])
+                n=n+2
+        max_list.append(max_prod)
+    return max(max_list)    
 
 # Q6. Group By
 
@@ -116,15 +111,14 @@ def subset_sum(target, lst):
     >>> subset_sum(0, [-1, -3, 15])     # Sum up none of the numbers to get 0
     True
     """
-    if target in lst or target==0:
+    if target==0 or target in lst:
         return True
-    elif target<0 
-        return False     
+    elif len(lst)==2 and sum(lst)!=target:
+        return False
     else:
-        a = 
-        b = 
-        return a or b 
-print(subset_sum(10, [-1, 5, 4, 6]))
+        a = not(target<0 and all([e>0 for e in lst]) or target>0 and all([e<0 for e in lst]))
+        b = subset_sum
+        return a or b
 
 # Q8: Intersection (from Su15 MT 1)
 def intersection(lst_of_lsts):

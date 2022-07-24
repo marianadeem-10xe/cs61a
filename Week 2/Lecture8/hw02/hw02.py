@@ -200,6 +200,15 @@ def count_coins(change):
     True
     """
     "*** YOUR CODE HERE ***"
+    def count(change, coin):
+        return 2 if change==5 else count(change-coin)  
+    if change<5:
+        return 1
+    else:
+        total_ways,coin = 0,1
+        get_next_coin(coin)
+        total_ways+= count(change, coin)
+              
 
 
 def zero(f):
