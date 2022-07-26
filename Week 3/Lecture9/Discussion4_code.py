@@ -4,6 +4,9 @@
 # Write a function that takes a list s and returns a new list that keeps only the 
 # even-indexed elements of s and multiplies them by their corresponding index. 
 
+from pkg_resources import yield_lines
+
+
 def even_weighted(s):
     """
     >>> x = [1, 2, 3, 4, 5, 6]
@@ -110,15 +113,30 @@ def subset_sum(target, lst):
     True
     >>> subset_sum(0, [-1, -3, 15])     # Sum up none of the numbers to get 0
     True
-    """
+    """       
+
     if target==0 or target in lst:
         return True
-    elif len(lst)==2 and sum(lst)!=target:
+    elif len(lst)==2 and sum(lst,0)!=target:
         return False
     else:
-        a = not(target<0 and all([e>0 for e in lst]) or target>0 and all([e<0 for e in lst]))
-        b = subset_sum
-        return a or b
+        a = any([entry==target for entry in [sum(l) for l in [lst[:i+1] for i in range(len(lst))]]])
+        b = any([subset_sum(target, l) for l in [[i for i in lst if i!=e] for e in lst]])
+        return a or b 
+
+        # expanded implementation of a and b
+        # a in above function 
+        """for e in lst:
+            total=e
+            all_but_e = [j for j in lst if j!=e]
+            for i in all_but_e:
+                total+=i
+                if total==target:
+                    return True
+            # b in above function
+            if subset_sum(target, all_but_e):
+                return True        
+        return False"""
 
 # Q8: Intersection (from Su15 MT 1)
 def intersection(lst_of_lsts):

@@ -182,30 +182,14 @@ def measure_methods(total_needed, cup_sizes):
     >>> measure_methods(125, [32, 64, 128])
     0
     """
-    def helper_func(cup_size):
-        """if total_needed%min(cup_sizes)!=0:
-            return count
-        if len(cup_sizes)==1:
-            return 1 if total_needed%cup_sizes[0]==0 else count
+    count = 0
+    for cup in cup_sizes:
+        if cup==min(cup_sizes)and total_needed%cup==0:
+            count+=1 
+        elif total_needed%cup==0:
+            count += total_needed//cup
 
-        for e in cup_sizes:
-            if total_needed%e!=0:
-                pass
-            else:
-                count+= 1 + measure_methods(total_needed-e, cup_sizes[:cup_sizes.index(e)])
-        return count"""
-        count = 0
-        if total_needed%cup_size==0:
-            # using only one cup size
-            count+=1 + helper_func(max([e for e in cup_sizes if e!=cup_size]))
-        else:    
-            # using cup_size in combo with lower cup_sizes
-            while total_needed:
-                if total_needed - cup_size=0:
-                    pass
-                else:
-                    total_needed
-    return helper_func(max(cup_sizes))    
+    return count    
     
     
     

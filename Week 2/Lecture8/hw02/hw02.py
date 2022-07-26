@@ -200,15 +200,30 @@ def count_coins(change):
     True
     """
     "*** YOUR CODE HERE ***"
-    def count(change, coin):
-        return 2 if change==5 else count(change-coin)  
-    if change<5:
+    """def helper(count=0):
+        yield count+1
+    coin = 1
+    if change == 0 or change==coin:
+        
         return 1
+    elif coin>change:
+        return 0
     else:
-        total_ways,coin = 0,1
-        get_next_coin(coin)
-        total_ways+= count(change, coin)
-              
+        # include coin
+
+        # include coin less than current coin"""
+    assert change>0, "amount should be positive"
+    coin  = get_next_coin(1)
+    #base case
+    if change<=coin:
+        return 1
+    else:    
+        count = 0
+        if change-coin>0:
+            count+=count_coins(change-coin)
+        coin = get_next_coin(coin)    
+        else:
+            return count
 
 
 def zero(f):
