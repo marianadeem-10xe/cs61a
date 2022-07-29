@@ -69,13 +69,14 @@ def permutations(seq):
     # base case
     if len(lst)==1:
         lst_perms.append(lst)
-    if len(lst)==2:
+        yield from lst_perms
+    elif len(lst)==2:
         lst_perms.extend([lst,[lst[1], lst[0]]])
+        yield from lst_perms
     else:
         for e in lst:
-            lst_perms.append([e]+perm for perm in permutations([i for i in lst if e!=i]))
-
-    yield from iter(lst_perms)
+            [lst_perms.append([e]+perm) for perm in permutations([i for i in lst if e!=i])]
+        yield from lst_perms
 
 def make_generators_generator(g):
     """Generates all the "sub"-generators of the generator returned by
@@ -112,13 +113,11 @@ def make_generators_generator(g):
     9
     """
     def gener(x):
-        for e in x:
-            ______________________________
-            if _________________________:
-                ______________________________
-    for e in g:
+        for e in g():
+            if e<=x:
+                yield e
+    for e in g():
         yield gener(e)
-
 
 def remainders_generator(m):
     """
@@ -152,7 +151,15 @@ def remainders_generator(m):
     11
     """
     "*** YOUR CODE HERE ***"
+    def gener(n):
+        g = naturals()
+        while True:
+            num = next(g)
+            if num%m==n:
+                yield num
 
+    for i in range(m):
+        yield gener(i)
 
 def naturals():
     """A generator function that yields the infinite sequence of natural

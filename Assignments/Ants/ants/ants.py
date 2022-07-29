@@ -27,6 +27,9 @@ class Place:
         # Phase 1: Add an entrance to the exit
         # BEGIN Problem 2
         "*** YOUR CODE HERE ***"
+        if isinstance(self.exit, Place):
+            self.exit.entrance = self
+
         # END Problem 2
 
     def add_insect(self, insect):
@@ -150,7 +153,8 @@ class HarvesterAnt(Ant):
 
     name = 'Harvester'
     implemented = True
-    # OVERRIDE CLASS ATTRIBUTES HERE
+    food_cost = 2       # OVERRIDE CLASS ATTRIBUTES HERE
+    
 
     def action(self, gamestate):
         """Produce 1 additional food for the colony.
@@ -159,6 +163,7 @@ class HarvesterAnt(Ant):
         """
         # BEGIN Problem 1
         "*** YOUR CODE HERE ***"
+        gamestate.food+=1
         # END Problem 1
 
 
@@ -168,16 +173,36 @@ class ThrowerAnt(Ant):
     name = 'Thrower'
     implemented = True
     damage = 1
-    # ADD/OVERRIDE CLASS ATTRIBUTES HERE
+    food_cost = 3       # ADD/OVERRIDE CLASS ATTRIBUTES HERE
+    min_range = 0
+    max_range = float('inf')
 
-    def nearest_bee(self):
+    def nearest_bee(self,):
         """Return the nearest Bee in a Place that is not the HIVE, connected to
         the ThrowerAnt's Place by following entrances.
 
         This method returns None if there is no such Bee (or none in range).
         """
         # BEGIN Problem 3 and 4
-        return choose_bee(self.place.bees)  # REPLACE THIS LINE
+        
+        curr_place = self.place
+        dist_place = self.min_range
+        
+        # start searching for bees from the given min_range
+        if dist_place:
+            for _ in range(dist_place):
+                if curr_place.entrance == None:
+                    return None
+                curr_place = curr_place.entrance 
+        
+        while self.min_range <= dist_place <= self.max_range and not curr_place.is_hive:
+            if curr_place.bees:
+                return choose_bee(curr_place.bees)
+            if curr_place.entrance:
+                curr_place = curr_place.entrance
+                dist_place+=1 
+            else:
+                break       
         # END Problem 3 and 4
 
     def throw_at(self, target):
@@ -206,9 +231,9 @@ class ShortThrower(ThrowerAnt):
 
     name = 'Short'
     food_cost = 2
-    # OVERRIDE CLASS ATTRIBUTES HERE
+    max_range = 3         # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
@@ -217,9 +242,9 @@ class LongThrower(ThrowerAnt):
 
     name = 'Long'
     food_cost = 2
-    # OVERRIDE CLASS ATTRIBUTES HERE
+    min_range = 5         # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
