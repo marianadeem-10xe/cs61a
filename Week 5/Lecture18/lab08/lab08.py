@@ -1,4 +1,5 @@
 from re import I
+from urllib.response import addinfo
 
 
 def convert_link(link):
@@ -129,13 +130,14 @@ def has_cycle(link):
     False
     """
     "*** YOUR CODE HERE ***"
-    track_link =Link(link.first)
-    remaining = link.rest
-    while not remaining.rest is Link.empty:
-        if remaining == track_link:
-            return True
-        track_link.rest = Link(remaining.first) 
-        remaining = remaining.rest
+    elements = [link.first]
+    check = link.rest
+    while check:
+        if check.first not in elements:
+            elements.append(check.first)
+            check = check.rest    
+        else:
+            return True if check is link else False             
     return False
 
 def has_cycle_constant(link):
@@ -150,7 +152,11 @@ def has_cycle_constant(link):
     False
     """
     "*** YOUR CODE HERE ***"
-
+    def helper(l):
+        if l is link:
+            return True
+        return False if l is Link.empty else helper(l.rest)
+    return False if link is Link.empty else helper(link.rest)
 
 def every_other(s):
     """Mutates a linked list so that all the odd-indiced elements are removed
@@ -170,18 +176,12 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
-    def idx_gen():
-        i=0
-        while True:
-            yield i 
-            i +=1
-    
-    g   = idx_gen()
-    idx = True
-    while not s is Link.empty:
-        s.rest = s.rest.rest
-        if not s.rest is Link.empty and idx%2==0:
-            every_other(s.rest)
+    def helper(l):
+        l.rest.rest = l.rest.rest.rest
+        return None
+    if s.rest is not Link.empty:
+        s.rest = s.rest.rest 
+    return None if s.rest.rest is Link.empty else helper(s)
        
 
 
@@ -202,11 +202,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
+    while len(t.branches)>n:
+        largest = max([b.label for b in t.branches])
+        [t.branches.pop(i) for i in range(len(t.branches)) if t.branches[i].label == largest]
+    for b in t.branches:
+        prune_small(b, n)
 
 
 def reverse_other(t):
@@ -223,7 +223,14 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
-
+    def helper(t, d=1):
+        if d%2==1:
+            labels = [b.label for b in t.branches]
+            for idx in range(len(t.branches)):
+                t.branches[idx].label = labels[len(labels)-1-idx]
+                if not t.branches[idx].is_leaf():
+                    
+    return None if t.is_leaf() else helper(t)    
 
 class Link:
     """A linked list.

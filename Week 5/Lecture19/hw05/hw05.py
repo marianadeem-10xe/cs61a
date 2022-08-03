@@ -50,6 +50,39 @@ class VendingMachine:
     'Here is your soda.'
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, product_name, price):
+        self.product_name = product_name
+        self.price = price
+        self.stock = 0
+        self.funds = 0
+
+
+    def add_funds(self, amount):
+        if not self.stock:
+            return f"Machine is empty. Please restock. Here is your ${amount}."
+        self.funds+=amount 
+        return f"Current balance: ${self.funds}"
+    
+    def restock(self, num_product):
+        self.stock+= num_product  
+        return f"Current {self.product_name} stock: {self.stock}"
+
+    def vend(self):
+        
+        if not self.stock:
+            return "Machine is empty. Please restock."
+        else:
+            if self.funds < self.price:
+                return f"You must add ${self.price-self.funds} more funds."
+            else:
+                if self.funds == self.price:
+                    msg = f"Here is your {self.product_name}."
+                else:
+                    msg = f"Here is your {self.product_name} and ${self.funds-self.price} change."
+                self.stock-=1
+                self.funds = 0
+                return msg 
+
 
 
 def store_digits(n):
@@ -68,7 +101,17 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    def add_link(s,t):
+        if s is Link.empty:
+            return t
+        return Link(s.first, add_link(s.rest, t))    
 
+    last, remaining = n%10, n//10
+    if not remaining:
+        return Link(last)
+    while remaining:
+        return add_link(store_digits(remaining) , Link(last))
+    
 
 def path_yielder(t, value):
     """Yields all possible paths from the root of t to a node with the label value
@@ -106,11 +149,20 @@ def path_yielder(t, value):
     """
 
     "*** YOUR CODE HERE ***"
-
-    for _______________ in _________________:
-        for _______________ in _________________:
-
-            "*** YOUR CODE HERE ***"
+    if t.is_leaf() and t.label!=value:
+        yield from []
+    else:
+        paths = []
+        for b in t.branches:
+            path = [t.label]
+            if b.label == value:
+                paths.append(path + [b.label])
+            
+            for p in path_yielder(b, value):
+                paths.append(path+p)
+        
+        yield from paths
+            
 
 
 def preorder(t):
@@ -124,7 +176,13 @@ def preorder(t):
     [2, 4, 6]
     """
     "*** YOUR CODE HERE ***"
-
+    if t.is_leaf():
+        return [t.label]
+    else:
+        lst = [t.label]
+        for b in t.branches:
+            lst += preorder(b)
+        return lst
 
 class Mint:
     """A mint creates coins by stamping on years.
@@ -162,10 +220,13 @@ class Mint:
 
     def create(self, kind):
         "*** YOUR CODE HERE ***"
+        coin  = kind(self.year)
+        coin.curr_year = Mint.current_year
+        return coin
 
     def update(self):
         "*** YOUR CODE HERE ***"
-
+        self.year = Mint.current_year
 
 class Coin:
     def __init__(self, year):
@@ -173,7 +234,7 @@ class Coin:
 
     def worth(self):
         "*** YOUR CODE HERE ***"
-
+        return self.cents + (self.curr_year - self.year) - 50
 
 class Nickel(Coin):
     cents = 5
@@ -209,7 +270,36 @@ def is_bst(t):
     False
     """
     "*** YOUR CODE HERE ***"
-
+    def helper(t, min_val, max_val):
+        
+        if len(t.branches)<=2:
+            b_status = True
+            if len(t.branches)==1:
+                if t.branches[0].label <= min_val:      # left branch
+                    b_status = b_status and (True if t.branches[0].is_leaf() else helper(t.branches[0], t.branches[0].label, max_val))
+                elif t.branches[0].label < max_val:     # right branch
+                    b_status = b_status and (True if t.branches[0].is_leaf() else helper(t.branches[0], t.branches[0].label, float("inf"))) 
+                else:
+                    b_status = False
+            
+            else:
+                for idx, b in enumerate(t.branches):
+                    if idx==0 :      # left branch
+                        if b.label <= min_val:
+                            b_status = b_status and (True if b.is_leaf() else helper(b, b.label, min_val))
+                        else:
+                            b_status = False
+                    else:           # right branch
+                        if b.label < max_val:       
+                            b_status = b_status and (True if b.is_leaf() else helper(b, b.label, max_val))
+                        else:
+                            b_status = False
+            return bool(b_status) 
+        return False
+    
+    if t.is_leaf():
+        return True    
+    return helper(t, t.label, float("inf"))            
 
 def generate_preorder(t):
     """Yield the entries in this tree in the order that they
@@ -223,7 +313,13 @@ def generate_preorder(t):
     [2, 3, 4, 5, 6, 7]
     """
     "*** YOUR CODE HERE ***"
-
+    if t.is_leaf():
+        yield from [t.label]
+    else:
+        lst = [t.label]
+        for b in t.branches:
+            lst += preorder(b)
+        yield from lst
 
 class Link:
     """A linked list.

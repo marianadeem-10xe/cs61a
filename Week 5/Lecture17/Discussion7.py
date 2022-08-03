@@ -313,13 +313,13 @@ def partition_gen(n):
     [2, 1, 1]
     [1, 1, 1, 1]
     """
-    """def yield_helper(j, k):
+    def yield_helper(j, k):
         if j == 0:
-            ____________________________________________
+            yield [k]
         elif ____________________________________________:
             for small_part in ________________________________:
                 yield ____________________________________________
             yield ________________________________________
-    yield from yield_helper(n, n)"""
-    
+    yield from yield_helper(n, n)
+
            

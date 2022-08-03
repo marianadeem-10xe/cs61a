@@ -43,17 +43,22 @@ def non_decrease_subseqs(s):
     >>> sorted(seqs2)
     [[], [1], [1], [1, 1], [1, 1, 2], [1, 2], [1, 2], [2]]
     """
-    def subseq_helper(s, prev):
-        if not s:
-            return [[]]
-        elif s[0] < prev:
-            return [s[i]] + non_decrease_subseqs(s[1:])
-        else:
-            a = [[]]
-            b = s[0]
-            return insert_into_all(b, a) + a
-    return subseq_helper(s, s[-1])
+    def helper(s,prev):
 
+        if not s:
+            return  [[]]
+        else: 
+            lst_subseq = [[]]
+            for i in reversed(s):
+                if i < prev:
+                    lst_subseq+= insert_into_all(i, lst_subseq)
+                    prev = i
+                else:
+                    for lst in reversed(lst_subseq):
+                        if not lst or lst[0] >= i:
+                            lst_subseq.append([i]+lst)
+            return lst_subseq            
+    return helper(s, float('inf'))
 
 def trade(first, second):
     """Exchange the smallest prefixes of first and second that have equal sum.
