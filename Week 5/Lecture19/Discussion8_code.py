@@ -72,7 +72,11 @@ def multiply_lnks(lst_of_lnks):
         prod =1 
     prod_l+=Link(prod)       
     return prod_l"""
-
+    def extend_link(s, t):
+        if s is Link.empty:
+            return t
+        else:
+            return Link(s.first, extend_link(s.rest, t)) 
 
     prod = 1
     m = min([len(link) for link in lst_of_lnks])
@@ -82,7 +86,7 @@ def multiply_lnks(lst_of_lnks):
         if i==0:
             prod_link = Link(prod)
         else:    
-            extend_link(prod_link, Link(prod))
+            prod_link = extend_link(prod_link, Link(prod))
         prod = 1        
     return prod_link       
 
@@ -99,6 +103,76 @@ def flip_two(s):
     Link(2, Link(1, Link(4, Link(3, Link(5)))))
     """
     "*** YOUR CODE HERE ***"
+    # recursive approach
+    """def helper(s,count=0):
+        l = s
+        
+        if len(s)<2:
+            return 
+
+        for _ in range(count):
+            l = l.rest.rest
+        
+        if not (l is Link.empty or l.rest is Link.empty):
+            temp = l.first
+            l.first = l.rest.first
+            l.rest.first = temp
+            helper(s, count+1)
+    
+    return helper(s)"""        
+    
+    # For an extra challenge, try writing out an iterative approach as well below!
+    "*** YOUR CODE HERE ***"
+    
+    # iterative approach
+    if len(s)<2:
+        return
+    l     = s
+    count = 0
+    while True:
+        for _ in range(count):
+            l = l.rest.rest
+        if not (l is Link.empty or l.rest is Link.empty):
+            temp = l.first
+            l.first = l.rest.first
+            l.rest.first = temp
+            count+=1
+            l=s
+        else:
+            return  
+            
+# Q6. Make even
+def make_even(t):
+    """
+    >>> t = Tree(1, [Tree(2, [Tree(3)]), Tree(4), Tree(5)])
+    >>> make_even(t)
+    >>> t.label
+    2
+    >>> t.branches[0].branches[0].label
+    4
+    """
+    "*** YOUR CODE HERE ***"
+    if t.label%2==1:
+        t.label+=1
+    for b in t.branches:
+        make_even(b)    
+
+# Q7. Leaves
+def leaves(t):
+    """Returns a list of all the labels of the leaf nodes of the Tree t.
+
+    >>> leaves(Tree(1))
+    [1]
+    >>> leaves(Tree(1, [Tree(2, [Tree(3)]), Tree(4)]))
+    [3, 4]
+    """
+    "*** YOUR CODE HERE ***"            
+    lst = []
+    if t.is_leaf():
+        lst.append(t.label)
+    for b in t.branches:
+        lst+=leaves(b)
+    return lst    
 
 # Q8. Find paths   
 def find_paths(t, entry):
@@ -109,27 +183,175 @@ def find_paths(t, entry):
     >>> find_paths(tree_ex, 12)
     []
     """
+
     paths = []
-    if t.is_leaf():
-        yield [] if t.label!=entry else [t.label]
+    if t.label==entry:
+        paths.append([t.label])
     for b in t.branches:
-        single_path = [[t.label] + lst for lst in list(find_paths(b, entry))]
-        print(single_path)
-        if entry in single_path:
-            paths.append(single_path)
-    yield from paths 
-            
-        
+        paths.extend([t.label]+path for path in find_paths(b, entry) if path[-1]==entry)
+    return paths   
+
+# Exam Prep
+# Q9. Node Printer
+def node_printer(t):
+    """
+    >>> t1 = Tree(1, [Tree(2,
+    ...                   [Tree(5),
+    ...                    Tree(6, [Tree(8)])]),
+    ...               Tree(3),
+    ...               Tree(4, [Tree(7)])])
+    >>> printer = node_printer(t1)
+    >>> for _ in range(8): # NOTE: it's okay to fail this test if all 8 are printed once
+    ...     printer()
+    1
+    2
+    3
+    4
+    5
+    6
+    7
+    8
+    """
+    to_explore = [t]
+    def step(count=0):
+        node = [print(tree.label) for tree in to_explore]
+        [print(n) for n in node]
+        yield
+        to_explore = [b for b in [tree.branches for tree in to_explore]]
+        step()
+    return step
     
-        
-    # For an extra challenge, try writing out an iterative approach as well below!
-    "*** YOUR CODE HERE ***"
-    """for i in range(len(s)-1, -1, 1):
-        if i%2==0:
-            pass
-        temp   = s[i]
-        s[i]   = s[i+1]
-        s[i+1] = temp"""
+# Q10: Iterator Tree Link Tree Iterator
+# Part A
+def funcs(link):
+    """
+    >>> t = Tree(1, [Tree(2,
+    ...                   [Tree(5),
+    ...                    Tree(6, [Tree(8)])]),
+    ...               Tree(3),
+    ...               Tree(4, [Tree(7)])])
+    >>> print(t)
+    1
+      2
+        5
+        6
+          8
+      3
+      4
+        7
+    >>> func_generator = funcs(Link.empty) # get root label
+    >>> f1 = next(func_generator) 
+    >>> f1(t)
+    1
+    >>> func_generator = funcs(Link(2)) # get label of third branch
+    >>> f1 = next(func_generator)
+    >>> f2 = next(func_generator)
+    >>> f2(f1(t))
+    4
+    >>> # This just puts the 4 values from the iterable into f1, f2, f3, f4
+    >>> f1, f2, f3, f4 = funcs(Link(0, Link(1, Link(0))))
+    >>> f4(f3(f2(f1(t))))
+    8
+    """
+    if link is Link.empty:
+        yield lambda t: t.label
+    else:
+        yield lambda t : t.branches[link.first]
+        yield from funcs(link.rest)
+
+# Paart B
+def apply(g, t, link):
+    """
+    >>> t = Tree(1, [Tree(2,
+    ...                   [Tree(5),
+    ...                    Tree(6, [Tree(8)])]),
+    ...               Tree(3),
+    ...               Tree(4, [Tree(7)])])
+    >>> print(t)
+    1
+      2
+        5
+        6
+          8
+      3
+      4
+        7
+    >>> apply(lambda x: x, t, Link.empty) # root label
+    1
+    >>> apply(lambda x: x, t, Link(0))    # label at first branch
+    2
+    >>> apply(lambda x: x * x, t, Link(0, Link(1, Link(0))))
+    64
+    """
+    for f in funcs(link):
+        t = f(t)
+    return g(t)    
+
+# Q11: O!-Pascal - Fall 2017 Final Q4
+# Part (a)
+def pascal_row(s):
+    """
+    >>> a = Link.empty
+    >>> for _ in range(5):
+    ...     a = pascal_row(a)
+    ...     print(a)
+    <1>
+    <1 1>
+    <1 2 1>
+    <1 3 3 1>
+    <1 4 6 4 1>
+    """
+    if s is Link.empty:
+        return Link(1)
+    start = Link(1)
+    last, current = start, s
+    while not current.rest is Link.empty:
+        last.rest = Link(current.first+current.rest.first)
+        last , current = last.rest, current.rest
+    last.rest = Link(current.first)
+    return start
+
+# Part (b)
+def make_pascal_triangle(k):
+    """
+    >>> print(make_pascal_triangle(5))
+    <<1> <1 1> <1 2 1> <1 3 3 1> <1 4 6 4 1>>
+    """
+    if k == 0:
+        return Link.empty
+    row = Link(1)
+    end = Link(row)
+    result = end
+    for _ in range(k-1):
+        row = pascal_row(end.first)
+        end.rest = Link(row)
+        end = end.rest
+    return result
+
+# Part (c)
+def diagonal(tri, n):
+    """
+    >>> triangle = make_pascal_triangle(6)
+    >>> print(diagonal(triangle, 1))
+    <1 1 1 1 1 1>
+    >>> print(diagonal(triangle, 2))
+    <1 2 3 4 5>
+    >>> print(diagonal(triangle, 3))
+    <1 3 6 10>
+    """
+    if tri is Link.empty:
+        end = Link.empty
+    else:
+        p, j = tri.first, 1
+        while j<n and p.rest:
+            p,j = p.rest, j+1
+        if j==n:
+            end = Link(p.first, diagonal(tri.rest, n))
+        else:
+            end = diagonal(tri.rest, n)
+    return end
+
+
 #####################################################################################
 class Link:
     """A linked list.
@@ -174,6 +396,7 @@ class Link:
     
     # added functions 
     #######################
+    # __getitem__ is not allowed to use (for Q11).
     def __getitem__(self, i):
         if i == 0:
             return self.first
@@ -182,14 +405,9 @@ class Link:
     
     def __len__(self):
         return 1 + len(self.rest)
-    
-    #__add__ = extend_link
 
-def extend_link(s, t):
-    if s is Link.empty:
-        return t
-    else:
-        return Link(s.first, extend_link(s.rest, t))   
+
+  
     #######################
 class Tree:
     """

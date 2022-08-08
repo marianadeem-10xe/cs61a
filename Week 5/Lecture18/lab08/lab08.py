@@ -1,3 +1,4 @@
+from audioop import reverse
 from re import I
 from urllib.response import addinfo
 
@@ -176,12 +177,9 @@ def every_other(s):
     Link(4)
     """
     "*** YOUR CODE HERE ***"
-    def helper(l):
-        l.rest.rest = l.rest.rest.rest
-        return None
-    if s.rest is not Link.empty:
-        s.rest = s.rest.rest 
-    return None if s.rest.rest is Link.empty else helper(s)
+    if s.rest:
+        s.rest= s.rest.rest
+        return None if s.rest is Link.empty else every_other(s.rest)
        
 
 
@@ -223,14 +221,16 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
-    def helper(t, d=1):
-        if d%2==1:
-            labels = [b.label for b in t.branches]
-            for idx in range(len(t.branches)):
-                t.branches[idx].label = labels[len(labels)-1-idx]
-                if not t.branches[idx].is_leaf():
-                    
-    return None if t.is_leaf() else helper(t)    
+    def helper(t,d=0):
+        if (d+1)%2==1:
+            b_labels = list(reversed([b.label for b in t.branches]))      
+            for idx, b in enumerate(t.branches):
+                b.label = b_labels[idx]
+                helper(b, d+1)
+        else:
+            for b in t.branches:
+                helper(b, d+1)
+    return helper(t)
 
 class Link:
     """A linked list.
