@@ -63,68 +63,6 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
-    
-
-def align_skeleton(skeleton, code):
-    """
-    Aligns the given skeleton with the given code, minimizing the edit distance between
-    the two. Both skeleton and code are assumed to be valid one-line strings of code. 
-
-    >>> align_skeleton(skeleton="", code="")
-    ''
-    >>> align_skeleton(skeleton="", code="i")
-    '+[i]'
-    >>> align_skeleton(skeleton="i", code="")
-    '-[i]'
-    >>> align_skeleton(skeleton="i", code="i")
-    'i'
-    >>> align_skeleton(skeleton="i", code="j")
-    '+[j]-[i]'
-    >>> align_skeleton(skeleton="x=5", code="x=6")
-    'x=+[6]-[5]'
-    >>> align_skeleton(skeleton="return x", code="return x+1")
-    'returnx+[+]+[1]'
-    >>> align_skeleton(skeleton="while x<y", code="for x<y")
-    '+[f]+[o]+[r]-[w]-[h]-[i]-[l]-[e]x<y'
-    >>> align_skeleton(skeleton="def f(x):", code="def g(x):")
-    'def+[g]-[f](x):'
-    """
-    skeleton, code = skeleton.replace(" ", ""), code.replace(" ", "")
-
-    def helper_align(skeleton_idx, code_idx):
-        """
-        Aligns the given skeletal segment with the code.
-        Returns (match, cost)
-            match: the sequence of corrections as a string
-            cost: the cost of the corrections, in edits
-        """
-        if skeleton_idx == len(skeleton) and code_idx == len(code):
-            return _________, ______________
-        if skeleton_idx < len(skeleton) and code_idx == len(code):
-            edits = "".join(["-[" + c + "]" for c in skeleton[skeleton_idx:]])
-            return _________, ______________
-        if skeleton_idx == len(skeleton) and code_idx < len(code):
-            edits = "".join(["+[" + c + "]" for c in code[code_idx:]])
-            return _________, ______________
-
-        possibilities = []
-        skel_char, code_char = skeleton[skeleton_idx], code[code_idx]
-        # Match
-        if skel_char == code_char:
-            _________________________________________
-            _________________________________________
-            possibilities.append((_______, ______))
-        # Insert
-        _________________________________________
-        _________________________________________
-        possibilities.append((_______, ______))
-        # Delete
-        _________________________________________
-        _________________________________________
-        possibilities.append((_______, ______))
-        return min(possibilities, key=lambda x: x[1])
-    result, cost = ________________________
-    return result
 
 
 class Button:
@@ -165,26 +103,25 @@ class Keyboard:
     """
 
     def __init__(self, *args):
-        ________________
-        for _________ in ________________:
-            ________________
+        self.buttons = {}
+        for button in [*args]:
+            self.buttons[button.pos] = button 
 
     def press(self, info):
         """Takes in a position of the button pressed, and
         returns that button's output"""
-        if ____________________:
-            ________________
-            ________________
-            ________________
-        ________________
+        if info in self.buttons:
+            self.buttons[info].times_pressed+=1
+            return self.buttons[info].key
+        return ""
 
     def typing(self, typing_input):
         """Takes in a list of positions of buttons pressed, and
         returns the total output"""
-        ________________
-        for ________ in ____________________:
-            ________________
-        ________________
+        output = ""
+        for pos in typing_input:
+            output += self.press(pos)
+        return output
 
 
 def pairs(lst):
@@ -205,7 +142,9 @@ def pairs(lst):
     5 5
     """
     "*** YOUR CODE HERE ***"
-
+    for e in lst:
+        for i in lst:
+            yield [e, i]
 
 class PairsIterator:
     """
@@ -225,13 +164,20 @@ class PairsIterator:
 
     def __init__(self, lst):
         "*** YOUR CODE HERE ***"
+        self.lst = lst
+        self.pairs = [] 
+        r = iter(self.lst)
+        for e in self.lst:
+            yield from [[e, ]]
+                   
 
     def __next__(self):
         "*** YOUR CODE HERE ***"
-
+        yield from self.pairs
+            
     def __iter__(self):
         "*** YOUR CODE HERE ***"
-
+        return iter(self.pairs)   
 
 class Str:
     """
@@ -248,6 +194,19 @@ class Str:
     ...     print(char)
     """
     "*** YOUR CODE HERE ***"
+    def __init__(self, string):
+        self.letters = list(string)
+
+    def __next__(self):
+       while len(self.letters)!=0:
+            yield self.letters[0]
+            self.letters.pop(0)
+
+    
+    def __iter__(self):
+        return self
+       
+
 
 
 def foldl(link, fn, z):

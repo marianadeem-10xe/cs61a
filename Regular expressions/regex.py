@@ -23,12 +23,18 @@ def phone_number(string):
     >>> phone_number("11111111") # 8 digits isn't valid, has to be 11, 10, or 7
     False
     """
-    return bool(re.search("[0-9]{3}+[0-9]{4}|[0-9]{3}+[0-9]{3}+[0-9]{4}|[0-9]{1}+[0-9]{3}+[0-9]{3}+[0-9]{4}",
-                            string))
-
+    
+    seven_digit  = [i.join(["[0-9]{3}", "[0-9]{4}"]) for i in ["-", " ", ""]]
+    ten_digit    = [i.join(["[0-9]{3}","[0-9]{3}", "[0-9]{4}"]) for i in ["-", " ", ""]] 
+    eleven_digit = [i.join(["[0-9]{1}","[0-9]{3}","[0-9]{3}", "[0-9]{4}"]) for i in ["-", " ", ""]]  
+    
+    for case in [seven_digit, ten_digit, eleven_digit]:
+        for pattern in case:
+            if bool(re.search(" "+pattern+" ", " "+string+" ")):
+                return True 
+    return False                      
 # Q2: Email Domain Validator
 
-import re
 def email_validator(email, domains):
     """
     >>> email_validator("oski@berkeley.edu", ["berkeley.edu", "gmail.com"])
@@ -48,11 +54,13 @@ def email_validator(email, domains):
     """
     pattern = "\w+@"
     for domain in domains:
-        pattern = pattern + domain + "|"
-    return bool(re.search(pattern, email))
+        d = domain.split(".")
+        pat  = pattern+d[0]+"\."+d[1]
+        if bool(re.fullmatch(pat, email)):
+            return True
+    return False        
 
 # Q3: Reg Extreme
-import re
 def all_patterns(n):
     """
     >>> "12" in all_patterns(2)
@@ -69,13 +77,17 @@ def all_patterns(n):
     True
     """
     numbers = list("0123456789")
-    special = list(r"\()[]{}+*?|$^.")
-    rest = 
+    special = ["\\"+ e for e in list(r"\()[]{}+*?|$^.")]
+    rest = ["\\"+ e for e in list("wWsSdDbB.")]
     everything = [""] + numbers + special + rest
-    if _________________________:
-        _________________________
+    if n==0:
+        yield ""
     else:
         'Use as many lines as necessary'
+        for e in all_patterns(n-1):       
+            yield from [e+i for i in everything]
+
+
 
 def reg_extreme(matches, no_matches, n=3):
     """
@@ -87,6 +99,11 @@ def reg_extreme(matches, no_matches, n=3):
     >>> bool(re.search(pattern, "a"))
     False
     """
-    for _____________________:
+    x = list(all_patterns(n))
+    for pat in x[1:]:
+        
+        if all([bool(re.search(pat, e)) for e in matches]) and all([not bool(re.search(pat, e)) for e in no_matches]):
+            return pat
         'Use as many lines as necessary'
+
 
