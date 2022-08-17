@@ -303,7 +303,7 @@ class Round:
         return len(self.cards)%4==0
 
 # Q12. Partition generator
-def partition_gen(n):
+#def partition_gen(n):
     """
     >>> for partition in partition_gen(4): # note: order doesn't matter
     ...     print(partition)
@@ -313,13 +313,32 @@ def partition_gen(n):
     [2, 1, 1]
     [1, 1, 1, 1]
     """
-    def yield_helper(j, k):
+    """def yield_helper(j, k):
         if j == 0:
-            yield [k]
-        elif ____________________________________________:
-            for small_part in ________________________________:
-                yield ____________________________________________
-            yield ________________________________________
-    yield from yield_helper(n, n)
+            yield [j]
+        elif j==k:
+            for small_part in partition_gen(j-k):
+                yield [small_part]+[j]
+            yield from partition_gen(k-1)
+    yield from yield_helper(n, n)"""
 
-           
+def list_partitions(n, m):
+    
+    """
+    >>> for lst in list_partitions(4, 4):
+    ...     print(lst) 
+    [4]
+    [1, 3]
+    [2, 2]
+    [1, 1, 2]
+    [1, 1, 1, 1]"""
+
+    if m==0 or n<0:
+        return []
+    else:
+        exact_match = []
+        if n==m:
+            exact_match = [[m]]
+        with_m = [p+[m] for p in list_partitions(n-m, m)]
+        without_m = list_partitions(n, m-1) 
+        yield from [exact_match + with_m + without_m]      

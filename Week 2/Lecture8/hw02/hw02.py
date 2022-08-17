@@ -212,7 +212,7 @@ def count_coins(change):
         # include coin
 
         # include coin less than current coin"""
-    assert change>0, "amount should be positive"
+    """assert change>0, "amount should be positive"
     coin  = get_next_coin(1)
     #base case
     if change<=coin:
@@ -223,7 +223,7 @@ def count_coins(change):
             count+=count_coins(change-coin)
         coin = get_next_coin(coin)    
         else:
-            return count
+            return count"""
 
 
 def zero(f):
@@ -233,16 +233,15 @@ def zero(f):
 def successor(n):
     return lambda f: lambda x: f(n(f)(x))
 
-
 def one(f):
     """Church numeral 1: same as successor(zero)"""
     "*** YOUR CODE HERE ***"
-
+    return lambda x: f(x)
 
 def two(f):
     """Church numeral 2: same as successor(successor(zero))"""
     "*** YOUR CODE HERE ***"
-
+    return lambda x : f(f(x)) 
 
 three = successor(two)
 
@@ -260,7 +259,8 @@ def church_to_int(n):
     3
     """
     "*** YOUR CODE HERE ***"
-
+    increment = lambda x: x+1
+    return int(n(increment)(0)) 
 
 def add_church(m, n):
     """Return the Church numeral for m + n, for Church numerals m and n.
@@ -269,7 +269,10 @@ def add_church(m, n):
     5
     """
     "*** YOUR CODE HERE ***"
-
+    added = zero
+    for i in range(church_to_int(m)+church_to_int(n)):
+        added = successor(added)
+    return added
 
 def mul_church(m, n):
     """Return the Church numeral for m * n, for Church numerals m and n.
@@ -281,7 +284,10 @@ def mul_church(m, n):
     12
     """
     "*** YOUR CODE HERE ***"
-
+    product = zero
+    for i in range(church_to_int(m)*church_to_int(n)):
+        product = successor(product)
+    return product
 
 def pow_church(m, n):
     """Return the Church numeral m ** n, for Church numerals m and n.
@@ -292,3 +298,7 @@ def pow_church(m, n):
     9
     """
     "*** YOUR CODE HERE ***"
+    exp = zero
+    for i in range(church_to_int(m)**church_to_int(n)):
+        exp = successor(exp)
+    return exp    

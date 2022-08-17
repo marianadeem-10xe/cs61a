@@ -164,20 +164,15 @@ class PairsIterator:
 
     def __init__(self, lst):
         "*** YOUR CODE HERE ***"
-        self.lst = lst
-        self.pairs = [] 
-        r = iter(self.lst)
-        for e in self.lst:
-            yield from [[e, ]]
-                   
-
-    def __next__(self):
-        "*** YOUR CODE HERE ***"
-        yield from self.pairs
-            
+        self.lst   = lst
+    
     def __iter__(self):
         "*** YOUR CODE HERE ***"
-        return iter(self.pairs)   
+        for e in self.lst:
+            self.index = 0
+            while self.index!=len(self.lst):
+                yield [e ,self.lst[self.index]]
+                self.index+=1
 
 class Str:
     """
@@ -195,19 +190,14 @@ class Str:
     """
     "*** YOUR CODE HERE ***"
     def __init__(self, string):
-        self.letters = list(string)
-
-    def __next__(self):
-       while len(self.letters)!=0:
-            yield self.letters[0]
-            self.letters.pop(0)
-
-    
+        self.string = string
+        self.index = 0
+        
     def __iter__(self):
-        return self
-       
-
-
+        while self.index != len(self.string):
+            yield self.string[self.index]
+            self.index+=1                  
+ 
 
 def foldl(link, fn, z):
     """ Left fold
@@ -222,7 +212,7 @@ def foldl(link, fn, z):
     if link is Link.empty:
         return z
     "*** YOUR CODE HERE ***"
-    return foldl(______, ______, ______)
+    return foldl(link.rest, fn, fn(z, link.first))
 
 
 def foldr(link, fn, z):
@@ -236,6 +226,11 @@ def foldr(link, fn, z):
     6
     """
     "*** YOUR CODE HERE ***"
+    if link is Link.empty:
+        return z
+    elif link.rest is Link.empty:
+        return fn(link.first, z)
+    return fn(link.first, foldr(link.rest, fn,z))    
 
 
 def filterl(lst, pred):
@@ -245,7 +240,16 @@ def filterl(lst, pred):
     Link(4, Link(2))
     """
     "*** YOUR CODE HERE ***"
+    if lst is Link.empty:
+        return Link.empty
 
+    fn  = lambda f : lambda a, b : f(a)  
+    z   = False
+    bool_val = foldr(lst, fn(pred), z)      # basically pred(lst.first) using foldr
+    if bool_val:
+        return Link(lst.first, filterl(lst.rest, pred))
+    else:
+        return filterl(lst.rest, pred)
 
 def reverse(lst):
     """ Reverses LST with foldl
@@ -258,7 +262,12 @@ def reverse(lst):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if lst is Link.empty:
+        return Link.empty
+    elif lst.rest is Link.empty:
+        return lst
+    else:
+         fn = lambda        
 
 identity = lambda x: x
 

@@ -54,6 +54,7 @@ class Insect:
     """An Insect, the base class of Ant and Bee, has health and a Place."""
 
     damage = 0
+    is_waterproof = False
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, health, place=None):
@@ -125,9 +126,16 @@ class Ant(Insect):
     def add_to(self, place):
         if place.ant is None:
             place.ant = self
+        
         else:
             # BEGIN Problem 8
-            assert place.ant is None, 'Two ants in {0}'.format(place)
+            if self.is_container and self.can_contain(place.ant) and not place.ant.is_container:
+                self.ant_contained = place.ant
+                place.ant = self
+            elif place.ant.is_container and place.ant.can_contain(self) and not self.is_container:
+                place.ant.ant_contained = self
+            else:
+                assert place.ant is None, 'Two ants in {0}'.format(place)
             # END Problem 8
         Insect.add_to(self, place)
 
@@ -256,7 +264,7 @@ class FireAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 5
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 5
 
     def __init__(self, health=3):
@@ -272,14 +280,48 @@ class FireAnt(Ant):
         """
         # BEGIN Problem 5
         "*** YOUR CODE HERE ***"
+        for bee in list(self.place.bees):           #iterate over a copy of list because it might be mutated during iteration 
+            Insect.reduce_health(bee, amount)
+        if self.health-amount==0:
+            for bee in list(self.place.bees):
+                Insect.reduce_health(bee, self.damage)
+        Ant.reduce_health(self, amount)
+
         # END Problem 5
 
 # BEGIN Problem 6
 # The WallAnt class
+class WallAnt(Ant):
+    name = "Wall"
+    food_cost = 4
+    implemented = True
+
+    def __init__(self, health=4):
+        super().__init__(health)
+
 # END Problem 6
 
 # BEGIN Problem 7
 # The HungryAnt Class
+class HungryAnt(Ant):
+
+    name = "Hungry"
+    food_cost = 4
+    chew_duration  = 3
+    implemented = True
+
+    def __init__(self, health=1):
+        super().__init__(health)
+        self.chew_countdown = 0
+
+    def action(self, gamestate):
+        if self.place.bees and self.chew_countdown<=0:
+            bee = choose_bee(self.place.bees)
+            bee.reduce_health(bee.health)
+            self.chew_countdown = self.chew_duration
+        else:
+            self.chew_countdown-=1    
+
 # END Problem 7
 
 
@@ -288,7 +330,7 @@ class ContainerAnt(Ant):
     ContainerAnt can share a space with other ants by containing them.
     """
     is_container = True
-
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ant_contained = None
@@ -296,11 +338,13 @@ class ContainerAnt(Ant):
     def can_contain(self, other):
         # BEGIN Problem 8
         "*** YOUR CODE HERE ***"
+        return True if not self.ant_contained and not other.is_container else False
         # END Problem 8
 
     def store_ant(self, ant):
         # BEGIN Problem 8
         "*** YOUR CODE HERE ***"
+        self.ant_contained = ant
         # END Problem 8
 
     def remove_ant(self, ant):
@@ -321,7 +365,10 @@ class ContainerAnt(Ant):
     def action(self, gamestate):
         # BEGIN Problem 8
         "*** YOUR CODE HERE ***"
+        if self.ant_contained:
+            self.ant_contained.action(gamestate)
         # END Problem 8
+
 
 
 class BodyguardAnt(ContainerAnt):
@@ -331,11 +378,28 @@ class BodyguardAnt(ContainerAnt):
     food_cost = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 8
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    
+    def __init__(self, health=2):
+        super().__init__(health)
+
     # END Problem 8
 
 # BEGIN Problem 9
 # The TankAnt class
+class TankAnt(ContainerAnt):
+    name = "Tank"
+    food_cost = 6
+    damage =1
+    implemented = True
+    
+    def __init__(self, health=2):
+        super().__init__(health)
+
+    def action(self, gamestate):
+        if self.place.bees:
+            [Insect.reduce_health(bee, self.damage) for bee in list(self.place.bees)]
+        self.ant_contained.action(gamestate) if self.ant_contained else None  
 # END Problem 9
 
 
@@ -347,31 +411,44 @@ class Water(Place):
         its health to 0."""
         # BEGIN Problem 10
         "*** YOUR CODE HERE ***"
+        Place.add_insect(self, insect)
+        if not insect.is_waterproof:
+            insect.reduce_health(insect.health)
         # END Problem 10
 
 # BEGIN Problem 11
 # The ScubaThrower class
+class ScubaThrower(ThrowerAnt):
+    name = "Scuba"
+    food_cost = 6
+    is_waterproof = True
+    implemented   = True
+
 # END Problem 11
 
 # BEGIN Problem EC
 
 
-class QueenAnt(Ant):  # You should change this line
+class QueenAnt(ScubaThrower):  # You should change this line
 # END Problem EC
     """The Queen of the colony. The game is over if a bee enters her place."""
 
-    name = 'Queen'
-    food_cost = 7
+    
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC
-    implemented = False   # Change to True to view in the GUI
+    name = 'Queen'
+    food_cost = 7
+    is_imposter = False
+    implemented = True   # Change to True to view in the GUI
     # END Problem EC
 
     def __init__(self, health=1):
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
+        super().__init__(health)
+        
         # END Problem EC
-
+    
     def action(self, gamestate):
         """A queen ant throws a leaf, but also doubles the damage of ants
         in her tunnel.
@@ -388,6 +465,11 @@ class QueenAnt(Ant):  # You should change this line
         """
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
+        
+        if self.health - amount==0:
+            bees_win() if not self.is_imposter else Insect.reduce_health(self, amount)
+        
+        self.health-=amount    
         # END Problem EC
 
 
@@ -406,6 +488,7 @@ class Bee(Insect):
 
     name = 'Bee'
     damage = 1
+    is_waterproof = True
     # OVERRIDE CLASS ATTRIBUTES HERE
 
     def sting(self, ant):

@@ -217,8 +217,49 @@ def greatest_pal_two(s):
     ''
     """
     for i in range(len(s)):
-        if s[i+1:] in __:
-            return ___
+        if s[i]!=s[-i-1]:
+            return greatest_pal_two(s[i+1:]) if s[i+1]==s[-1] and len(s)>2 else greatest_pal_two(s[i:-1]) 
     return s   
-    
 
+# Q11: All-Ys Has Been
+
+Y = lambda f: (lambda x: x(x))(lambda x: f(lambda z: x(x)(z)))
+fib_maker = lambda f: lambda r: ________________________________________________________________
+is_pal_maker = lambda f: lambda r: _____________________________________________________________
+
+fib = Y(fib_maker)
+is_pal = Y(is_pal_maker)
+
+# This code sets up doctests for fib and is_pal. Run test(fib) and test(is_pal) to check your implementation
+
+fib.__name__ = 'fib'
+fib.__doc__="""Given n, returns the nth Fibonacci nuimber.
+
+>>> fib(0)
+0
+>>> fib(1)
+1
+>>> fib(2)
+1
+>>> fib(3)
+2
+>>> fib(4)
+3
+>>> fib(5)
+5
+"""
+
+is_pal.__name__ = 'is_pal'
+is_pal.__doc__="""Returns whether or not an input string s is a palindrome.
+
+>>> is_pal('tenet')
+True
+>>> is_pal('tenets')
+False
+>>> is_pal('ab')
+False
+>>> is_pal('')
+True
+>>> is_pal('a')
+True
+"""
