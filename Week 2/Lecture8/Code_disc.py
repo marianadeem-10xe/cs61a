@@ -224,8 +224,8 @@ def greatest_pal_two(s):
 # Q11: All-Ys Has Been
 
 Y = lambda f: (lambda x: x(x))(lambda x: f(lambda z: x(x)(z)))
-fib_maker = lambda f: lambda r: ________________________________________________________________
-is_pal_maker = lambda f: lambda r: _____________________________________________________________
+fib_maker = lambda f: lambda r: 0 if r==0 else 1 if r==1 else fib_maker(lambda x:x)(r-1)+fib_maker(lambda x:x)(r-2)
+is_pal_maker = lambda f: lambda r: r==r[::-1]
 
 fib = Y(fib_maker)
 is_pal = Y(is_pal_maker)

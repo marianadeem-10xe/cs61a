@@ -213,14 +213,15 @@ def node_printer(t):
     8
     """
     to_explore = [t]
-    def step(count=0):
-        node = [print(tree.label) for tree in to_explore]
-        [print(n) for n in node]
-        yield
-        to_explore = [b for b in [tree.branches for tree in to_explore]]
-        step()
+    def step():
+        print(to_explore[0].label)
+        for b in to_explore[0].branches:
+            to_explore.insert(0, b)
+            step()
+
     return step
-    
+
+
 # Q10: Iterator Tree Link Tree Iterator
 # Part A
 def funcs(link):

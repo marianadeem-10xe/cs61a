@@ -322,7 +322,7 @@ class Round:
             yield from partition_gen(k-1)
     yield from yield_helper(n, n)"""
 
-def list_partitions(n, m):
+def list_partitions(n):
     
     """
     >>> for lst in list_partitions(4, 4):
@@ -333,12 +333,15 @@ def list_partitions(n, m):
     [1, 1, 2]
     [1, 1, 1, 1]"""
 
-    if m==0 or n<0:
-        return []
-    else:
-        exact_match = []
-        if n==m:
-            exact_match = [[m]]
-        with_m = [p+[m] for p in list_partitions(n-m, m)]
-        without_m = list_partitions(n, m-1) 
-        yield from [exact_match + with_m + without_m]      
+    def yield_helper(j, k):
+        if j == 0:
+            yield []
+        elif j>0 and k>0:
+            for small_part in yield_helper(j-k,k):
+                yield small_part + [k]
+            yield from yield_helper(j,k-1)
+    yield from yield_helper(n, n)
+
+
+print(list(list_partitions(4)))    
+

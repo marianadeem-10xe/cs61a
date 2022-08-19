@@ -267,7 +267,9 @@ def reverse(lst):
     elif lst.rest is Link.empty:
         return lst
     else:
-         fn = lambda        
+         fn = lambda x:x         
+
+
 
 identity = lambda x: x
 
@@ -284,6 +286,7 @@ def foldl2(link, fn, z):
     """
     def step(x, g):
         "*** YOUR CODE HERE ***"
+        return lambda a: g(fn(a, x)) 
     return foldr(link, step, identity)(z)
 
 

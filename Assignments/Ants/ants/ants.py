@@ -1,5 +1,6 @@
 """CS 61A presents Ants Vs. SomeBees."""
 
+from operator import length_hint
 import random
 from ucb import main, interact, trace
 from collections import OrderedDict
@@ -105,9 +106,11 @@ class Insect:
 class Ant(Insect):
     """An Ant occupies a place and does work for the colony."""
 
-    implemented = False  # Only implemented Ant classes should be instantiated
+    implemented = True  # Only implemented Ant classes should be instantiated
     food_cost = 0
     is_container = False
+    is_buffed = False
+    bolcks_path = True
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, health=1):
@@ -153,6 +156,8 @@ class Ant(Insect):
         """Double this ants's damage, if it has not already been buffed."""
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
+        self.damage+=self.damage
+        self.is_buffed = True
         # END Problem EC
 
 
@@ -329,6 +334,7 @@ class ContainerAnt(Ant):
     """
     ContainerAnt can share a space with other ants by containing them.
     """
+    name = "Container"
     is_container = True
     
     def __init__(self, *args, **kwargs):
@@ -428,27 +434,27 @@ class ScubaThrower(ThrowerAnt):
 
 # BEGIN Problem EC
 
-
 class QueenAnt(ScubaThrower):  # You should change this line
 # END Problem EC
     """The Queen of the colony. The game is over if a bee enters her place."""
 
-    
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC
     name = 'Queen'
     food_cost = 7
-    is_imposter = False
     implemented = True   # Change to True to view in the GUI
+    is_true_queen = False
+    queen_instances = []
     # END Problem EC
 
     def __init__(self, health=1):
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
         super().__init__(health)
-        
+        self.queen_instances.append(self)
+        self.queen_instances[0].is_true_queen = True    
         # END Problem EC
-    
+        
     def action(self, gamestate):
         """A queen ant throws a leaf, but also doubles the damage of ants
         in her tunnel.
@@ -457,6 +463,20 @@ class QueenAnt(ScubaThrower):  # You should change this line
         """
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
+        if not self.is_true_queen:
+            self.reduce_health(self.health)
+        else:
+            super().action(gamestate)
+            curr_place = self.place.exit
+            while curr_place:
+                if curr_place.ant:
+                    a = curr_place.ant
+                    if not a.is_buffed:
+                        Ant.buff(a)
+                    if a.is_container and a.ant_contained:
+                        Ant.buff(a.ant_contained) if not a.ant_contained.is_buffed else None    
+                curr_place = curr_place.exit     
+
         # END Problem EC
 
     def reduce_health(self, amount):
@@ -466,13 +486,19 @@ class QueenAnt(ScubaThrower):  # You should change this line
         # BEGIN Problem EC
         "*** YOUR CODE HERE ***"
         
-        if self.health - amount==0:
-            bees_win() if not self.is_imposter else Insect.reduce_health(self, amount)
-        
-        self.health-=amount    
+        Insect.reduce_health(self,amount) 
+            
         # END Problem EC
 
-
+    def remove_from(self, place):
+        if place.ant is self or (place.ant.is_container and place.ant.ant_contained is self):
+            if self.is_true_queen:
+                bees_win() if self.health==0 else None
+            else:
+                Ant.remove_from(self, place)
+        else:
+            Ant.remove_from(self, place)
+                     
 class AntRemover(Ant):
     """Allows the player to remove ants from the board in the GUI."""
 
@@ -489,6 +515,9 @@ class Bee(Insect):
     name = 'Bee'
     damage = 1
     is_waterproof = True
+    
+    is_scared     = False
+    
     # OVERRIDE CLASS ATTRIBUTES HERE
 
     def sting(self, ant):
@@ -504,7 +533,7 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Special handling for NinjaAnt
         # BEGIN Problem Optional 1
-        return self.place.ant is not None
+        return False if self.place.ant is None or self.place.ant.blocks_path is False else True
         # END Problem Optional 1
 
     def action(self, gamestate):
@@ -536,6 +565,8 @@ class Bee(Insect):
         the previous .action on even-numbered turns."""
         # BEGIN Problem Optional 2
         "*** YOUR CODE HERE ***"
+        
+        
         # END Problem Optional 2
 
     def scare(self, length):
@@ -548,10 +579,16 @@ class Bee(Insect):
 
     def apply_status(self, status, previous_action, length):
         """Apply STATUS to replace the current .action method for
-        duraction LENGTH calls, after which it simply calls PREVIOUS_ACTION."""
+        duration LENGTH calls, after which it simply calls PREVIOUS_ACTION."""
 
         # BEGIN Problem Optional 2
         "*** YOUR CODE HERE ***"
+        if length:
+            self.action = status
+        else:
+            self.action = previous_action
+
+
         # END Problem Optional 2
 
 
@@ -569,18 +606,29 @@ class NinjaAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem Optional 1
-    implemented = False   # Change to True to view in the GUI
+    blocks_path = False
+    implemented = True   # Change to True to view in the GUI
     # END Problem Optional 1
 
     def action(self, gamestate):
         # BEGIN Problem Optional 1
         "*** YOUR CODE HERE ***"
+        if self.place.bees:
+            for bee in list(self.place.bees):
+                Insect.reduce_health(bee, self.damage)
         # END Problem Optional 1
 
 ############
 # Statuses #
 ############
-
+def status(ant, target_bee, gamestate):
+    if ant.name == "Slow":
+        def slow_status(gamestate):
+            if gamestate.time%2==1:
+                return
+        return slow_status
+    """if ant.name == "Scary":
+        return """
 
 class SlowThrower(ThrowerAnt):
     """ThrowerAnt that causes Slow on Bees."""

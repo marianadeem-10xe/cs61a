@@ -200,31 +200,41 @@ def count_coins(change):
     True
     """
     "*** YOUR CODE HERE ***"
-    """def helper(count=0):
-        yield count+1
-    coin = 1
-    if change == 0 or change==coin:
-        
-        return 1
-    elif coin>change:
-        return 0
-    else:
-        # include coin
-
-        # include coin less than current coin"""
-    """assert change>0, "amount should be positive"
-    coin  = get_next_coin(1)
-    #base case
-    if change<=coin:
-        return 1
-    else:    
-        count = 0
-        if change-coin>0:
-            count+=count_coins(change-coin)
-        coin = get_next_coin(coin)    
+    """def helper(n, coin):
+        if n<=coin:
+            return 1
+        elif change>coin:
+            return 0
         else:
-            return count"""
-
+            return 1+helper(n-coin, coin)        
+    if change<5:
+        return 1
+    else:
+        coins = [1,5,10]
+        total = 0
+        for coin in coins:
+            with_coin = helper(change,get_next_coin(coin))
+            total += helper(change,get_next_coin(coin))
+        return total"""
+    """def helper(change, coin):
+        if change==coin: return 1
+        elif change<coin: return 0
+        else: return count_coins(change-coin)
+    
+    return 1+helper(change, get_next_coin(1))+\
+           helper(change, get_next_coin(5))+helper(change, get_next_coin(10))"""
+    coins = [1,5,10,25]
+    def helper(change, coin):
+        if change ==0:
+            return 1
+        if change<0:
+            return 0
+        if not coin:
+            return 0
+        to_use = coins[coins.index(coin):]
+        coin   = to_use[0]
+        return helper(change,get_next_coin(coin))+helper(change-coin,coin)
+    return helper(change, 1) 
 
 def zero(f):
     return lambda x: x
