@@ -63,6 +63,16 @@ def add_trees(t1, t2):
       5
     """
     "*** YOUR CODE HERE ***"
+    from itertools import zip_longest
+    z = zip_longest(t1, t2, fillvalue="?")
+    for item in z:
+        for x ,y in [item]:
+            if type(x)== "int" and type(y)=="int": label = tree(x+y)
+            else:
+                if "?" in item:
+                    n = sum(sum(x,y, []))       # x and y are lists here
+                  
+                
 
 
 class Button:
@@ -264,16 +274,10 @@ def reverse(lst):
     "*** YOUR CODE HERE ***"
     if lst is Link.empty:
         return Link.empty
-    elif lst.rest is Link.empty:
-        return lst
     else:
-         fn = lambda x:x         
-
-
+        return foldl(lst,lambda l,x: Link(x) if l is Link.empty else Link(x,l), Link.empty)       
 
 identity = lambda x: x
-
-
 def foldl2(link, fn, z):
     """ Write foldl using foldr
     >>> list = Link(3, Link(2, Link(1)))

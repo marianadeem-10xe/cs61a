@@ -303,29 +303,11 @@ class Round:
         return len(self.cards)%4==0
 
 # Q12. Partition generator
-#def partition_gen(n):
-    """
-    >>> for partition in partition_gen(4): # note: order doesn't matter
-    ...     print(partition)
-    [4]
-    [3, 1]
-    [2, 2]
-    [2, 1, 1]
-    [1, 1, 1, 1]
-    """
-    """def yield_helper(j, k):
-        if j == 0:
-            yield [j]
-        elif j==k:
-            for small_part in partition_gen(j-k):
-                yield [small_part]+[j]
-            yield from partition_gen(k-1)
-    yield from yield_helper(n, n)"""
 
-def list_partitions(n):
+def partition_gen(n):
     
     """
-    >>> for lst in list_partitions(4, 4):
+    >>> for lst in list_partitions(4, 4): # note: order doesn't matter
     ...     print(lst) 
     [4]
     [1, 3]
@@ -343,5 +325,5 @@ def list_partitions(n):
     yield from yield_helper(n, n)
 
 
-print(list(list_partitions(4)))    
+  
 

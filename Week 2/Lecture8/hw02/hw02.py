@@ -200,29 +200,7 @@ def count_coins(change):
     True
     """
     "*** YOUR CODE HERE ***"
-    """def helper(n, coin):
-        if n<=coin:
-            return 1
-        elif change>coin:
-            return 0
-        else:
-            return 1+helper(n-coin, coin)        
-    if change<5:
-        return 1
-    else:
-        coins = [1,5,10]
-        total = 0
-        for coin in coins:
-            with_coin = helper(change,get_next_coin(coin))
-            total += helper(change,get_next_coin(coin))
-        return total"""
-    """def helper(change, coin):
-        if change==coin: return 1
-        elif change<coin: return 0
-        else: return count_coins(change-coin)
     
-    return 1+helper(change, get_next_coin(1))+\
-           helper(change, get_next_coin(5))+helper(change, get_next_coin(10))"""
     coins = [1,5,10,25]
     def helper(change, coin):
         if change ==0:

@@ -210,16 +210,27 @@ def minimum_mewtations(start, goal, limit):
     3
     """
     len_diff   = abs(len(start)-len(goal))
-    """add        = lambda l , str : l+str
+    add        = lambda l , str : l+str
     remove     = lambda str : str[1:]
-    substitute = lambda l, str : l+str[1:]"""
+    substitute = lambda l, str : l+str[1:]
+    def count_changes(start, goal, limit):    
+        # Base case
+        if not start or not goal:
+            return len_diff
+        else:
+            if limit>0:
+                if start[0]!=goal[0]:
+                    added_str = add(goal[0], start)
+                if start[0] not in goal:
+                    rem_str   = remove(start)
+                if  start[0] not in goal and len(start)==len(goal):
+                    sub_str   = substitute(goal[0], start)        
+            else: return limit+1 
 
-    # Base case
-    if not start or not goal:
-        return len_diff
+    
     
     # Recursive case
-    else:
+    """else:
         if start[0]== goal[0]:
             total = minimum_mewtations(start[1:], goal[1:], limit)
         
@@ -246,9 +257,8 @@ def minimum_mewtations(start, goal, limit):
                     start = goal[0] + start[1:]         # remove then add letter = substitute letter, count as one change
                     total = 1 + minimum_mewtations(start[1:], goal[1:], limit)
         print(total)
-        return total if total <= limit else limit+1
+        return total if total <= limit else limit+1"""
         # END
-
 print("changes",minimum_mewtations("rlogcul", "logical", 10))
 
 
