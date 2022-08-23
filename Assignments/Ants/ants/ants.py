@@ -551,6 +551,7 @@ class Bee(Insect):
             self.sting(self.place.ant)
         elif self.health > 0 and destination is not None:
             self.move_to(destination)
+       
 
     def add_to(self, place):
         place.bees.append(self)
@@ -565,7 +566,11 @@ class Bee(Insect):
         the previous .action on even-numbered turns."""
         # BEGIN Problem Optional 2
         "*** YOUR CODE HERE ***"
-        
+        self.previous_action  = self.action
+        self.slowed_for_turns = length
+        self.is_slowed = True
+        self.apply_status(slow_status, self.previous_action, length)
+
         
         # END Problem Optional 2
 
@@ -583,12 +588,15 @@ class Bee(Insect):
 
         # BEGIN Problem Optional 2
         "*** YOUR CODE HERE ***"
-        if length:
-            self.action = status
-        else:
-            self.action = previous_action
-
-
+        def slowed():
+            
+            if self.slowed_for_turns:
+                self.action = status(self)
+            else:
+                self.action = previous_action
+                self.is_slowed = False
+            
+        return slowed
         # END Problem Optional 2
 
 
@@ -621,12 +629,15 @@ class NinjaAnt(Ant):
 ############
 # Statuses #
 ############
-def status(ant, target_bee, gamestate):
-    if ant.name == "Slow":
-        def slow_status(gamestate):
-            if gamestate.time%2==1:
-                return
-        return slow_status
+
+def slow_status(target_bee):
+    def slowed_action(gamestate):
+        if gamestate.time%2==1:
+            pass
+        else:
+            target_bee.previous_action 
+        target_bee.slowed_for_turns-=1
+    return slowed_action
     """if ant.name == "Scary":
         return """
 

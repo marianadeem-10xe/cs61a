@@ -1,5 +1,6 @@
 """Typing test implementation"""
 
+from doctest import OutputChecker
 from utils import lower, split, remove_punctuation, lines_from_file
 from ucb import main, interact, trace
 from datetime import datetime
@@ -209,7 +210,7 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    len_diff   = abs(len(start)-len(goal))
+    """len_diff   = abs(len(start)-len(goal))
     add        = lambda l , str : l+str
     remove     = lambda str : str[1:]
     substitute = lambda l, str : l+str[1:]
@@ -218,15 +219,48 @@ def minimum_mewtations(start, goal, limit):
         if not start or not goal:
             return len_diff
         else:
-            if limit>0:
-                if start[0]!=goal[0]:
+            count = [0, 0, 0]
+            added_str, rem_str, sub_str = start[:], start[:], start[:]
+            
+            while added_str or rem_str or sub_str:
+                
+                if added_str[0]!=goal[0]:
                     added_str = add(goal[0], start)
-                if start[0] not in goal:
+                    count[0]+=1
+                if rem_str[0] not in goal:
                     rem_str   = remove(start)
-                if  start[0] not in goal and len(start)==len(goal):
-                    sub_str   = substitute(goal[0], start)        
-            else: return limit+1 
+                    count[1]+=1
+                if  sub_str[0] not in goal and len(start)==len(goal):
+                    sub_str   = substitute(goal[0], start)
+                    count[2]+=1"""        
+                 
+    """if not start or not goal:  # Fill in the condition
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return abs(len(start)-len(goal))
+        # END
 
+    elif start==goal:  # Feel free to remove or add additional cases
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        return 0
+        # END
+
+    else:
+        add        = lambda start, goal : goal[0]+start if goal[0] not in start else start
+        remove     = lambda start, goal : start[1:] if start[0] not in goal else start
+        substitute = lambda start, goal : goal[0]+start[1:] if len(start)==len(goal) else start
+
+        # BEGIN
+        "*** YOUR CODE HERE ***"
+        if start[0]!=goal[0]:
+            if goal[0] not in start:
+                total = 1 + minimum_mewtations(add(start, goal), goal, limit-1)
+            total = 1 + minimum_mewtations(remove(start, goal), goal, limit-1)
+            total = 1 + minimum_mewtations(substitute(start, goal), goal, limit-1)
+        
+        return total if total<=limit else limit+1
+        # END"""
     
     
     # Recursive case
@@ -301,6 +335,15 @@ def report_progress(sofar, prompt, user_id, send):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    progress = 0
+    for i in range(len(sofar)):
+        if sofar[i]==prompt[i]:
+            progress+=1
+        else: break    
+    prog_dict = {"id": user_id, "progress": progress/len(prompt)}
+    send(prog_dict) 
+    return prog_dict["progress"]      
+        
     # END PROBLEM 8
 
 
@@ -334,6 +377,13 @@ def time_per_word(times_per_player, words):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = []
+    for player_t in times_per_player:
+        p_time = []
+        for t_idx in range(len(player_t)-1):
+            p_time.append(player_t[t_idx+1]-player_t[t_idx])
+        times.append(p_time)
+    return game(words, times)        
     # END PROBLEM 9
 
 
@@ -352,6 +402,19 @@ def fastest_words(game):
     word_indices = range(len(get_words(game)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    
+    words, times = get_words(game), get_times(game)
+    output = [[] for p in player_indices]  
+    for w_idx in word_indices:
+        fastest_p, fastest_time = 0,float("inf")
+        for p in player_indices:
+            time_p = time(game, p, w_idx)
+            if time_p<fastest_time:
+                fastest_p = p
+                fastest_time = time_p
+        output[fastest_p].append(word_at(game, w_idx))
+
+    return output        
     # END PROBLEM 10
 
 
